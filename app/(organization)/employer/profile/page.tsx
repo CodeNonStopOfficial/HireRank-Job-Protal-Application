@@ -1,10 +1,15 @@
+import { EmployeCompanyByIdProfile } from "@/app/services/employer/get-company";
 import { CompanyProfileComponent } from "../_components/CompanyProfile";
+import { notFound } from "next/navigation";
 
-export default function CompanyProfilePage(){
+export default async function CompanyProfilePage(){
+    const data = await EmployeCompanyByIdProfile();
+    if(!data){
+        return notFound();
+    }
     return (
         <div>
-            <h1>Company Profile</h1>
-            <CompanyProfileComponent/>
+            <CompanyProfileComponent company={data}/>
         </div>
     )
 }

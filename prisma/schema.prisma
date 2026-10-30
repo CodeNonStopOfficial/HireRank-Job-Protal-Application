@@ -88,6 +88,9 @@ model Company {
   logo     String
   website  String
   xAccount String?
+  linkedin String?
+  employes String?
+  
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
