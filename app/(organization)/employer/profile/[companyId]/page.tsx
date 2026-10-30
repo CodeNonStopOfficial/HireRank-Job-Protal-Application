@@ -13,7 +13,7 @@ export default async function EditCompanyProfilePage({ params }: iAppProps) {
     return notFound();
   }
   return (
-    <div className="min-h-screen max-w-full px-4 py-6">
+    <div className="min-h-screen max-w-full py-6">
       <Suspense fallback={<h1>Loading...</h1>}>
         <EditCompanyProfileForm data={company} />
       </Suspense>

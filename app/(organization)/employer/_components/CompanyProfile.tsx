@@ -10,11 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import {
   MapPin,
   Globe,
-  //   Linkedin
   BriefcaseBusiness,
   Users,
   Building2,
-  Link2Icon,
   Edit2,
 } from "lucide-react";
 import Image from "next/image";
@@ -41,7 +39,7 @@ export function CompanyProfileComponent({ company }: IAppCompanyProfil) {
             <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border bg-muted">
               {company.logo ? (
                 <Image
-                  src={company.logo}
+                  src={company.logo ?? ""}
                   width={96}
                   height={96}
                   alt={`${company.name} logo`}
