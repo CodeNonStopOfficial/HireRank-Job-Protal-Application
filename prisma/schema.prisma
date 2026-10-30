@@ -30,8 +30,10 @@ model User {
   company   Company?
   jobSeeker JobSeeker?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  userSubscriptions UserSubscription[]
+  payments          Payment[]
 
   @@index([role])
 }
@@ -81,17 +83,16 @@ model VerificationToken {
 }
 
 model Company {
-  id       String  @id @default(uuid())
-  name     String
-  location String
-  about    String
-  logo     String
-  website  String
-  xAccount String?
-  linkedin String?
-  employes String?
+  id           String  @id @default(uuid())
+  name         String
+  location     String
+  about        String
+  logo         String
+  website      String
+  xAccount     String?
+  linkedin     String?
+  employes     String?
   organization String?
-  
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
@@ -201,24 +202,169 @@ model Job {
   @@index([employmentType, workplaceType])
 }
 
+// subscription plain
 
-enum paymentStatus {
-   Active
-   Pending
-   Cancle
-   Rejected
+enum PlanInterval {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+  LIFETIME
 }
 
-model Subscription {
-  id                String    @id @default(cuid())
-  userId            String
-  plan              String
-  razorpayOrderId   String    @unique
-  razorpayPaymentId String?   @unique
-  amount            Int
-  status            paymentStatus @default(Pending)
-  startDate         DateTime?
-  endDate           DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  AUTHENTICATION_FAILED
+  HALTED
+  CANCELLED
+  EXPIRED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  CREATED
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentType {
+  ONE_TIME
+  RECURRING
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+}
+
+model SubscriptionPlan {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  // Store all monetary amounts in the smallest currency unit.
+  // For INR, 49900 means ₹499.00.
+  price         Int
+  currency      String       @default("INR")
+  interval      PlanInterval @default(MONTHLY)
+  intervalCount Int          @default(1)
+
+  // Job portal features and limits.
+  jobLimit        Int     @default(5)
+  featuredJobs    Int     @default(0)
+  resumeAccess    Boolean @default(false)
+  companyBranding Boolean @default(false)
+  prioritySupport Boolean @default(false)
+
+  // Optional Razorpay plan ID for recurring billing.
+  razorpayPlanId String? @unique
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions UserSubscription[]
+
+  @@index([isActive])
+}
+
+model UserSubscription {
+  id String @id @default(cuid())
+
+  // Employer/customer who purchased the plan.
+  userId String
+  planId String
+
+  // Snapshot the purchased price so later plan price changes
+  // do not change the historical subscription amount.
+  amount   Int
+  currency String @default("INR")
+
+  status      SubscriptionStatus @default(PENDING)
+  paymentType PaymentType        @default(ONE_TIME)
+
+  // Razorpay identifiers.
+  razorpaySubscriptionId String? @unique
+  razorpayCustomerId     String?
+
+  // Track subscription validity.
+  startsAt      DateTime?
+  endsAt        DateTime?
+  nextBillingAt DateTime?
+  cancelledAt   DateTime?
+
+  // Track job usage for the current subscription period.
+  jobsPosted Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+  payments Payment[]
+
+  @@index([userId, status])
+  @@index([planId])
+  @@index([endsAt])
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  userId         String
+  subscriptionId String?
+
+  amount   Int
+  currency String        @default("INR")
+  status   PaymentStatus @default(CREATED)
+
+  // Razorpay order and payment identifiers.
+  razorpayOrderId   String? @unique
+  razorpayPaymentId String? @unique
+
+  // Refund details.
+  refundAmount     Int     @default(0)
+  razorpayRefundId String?
+
+  // Store gateway error details when available.
+  errorCode        String?
+  errorDescription String?
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user         User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  subscription UserSubscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([subscriptionId])
+  @@index([createdAt])
+}
+
+model RazorpayWebhookEvent {
+  id String @id @default(cuid())
+
+  // The Razorpay event identifier, when provided.
+  razorpayEventId String?       @unique
+  eventType       String
+  status          WebhookStatus @default(RECEIVED)
+
+  // Store the verified event payload for processing/auditing.
+  payload Json
+
+  processedAt  DateTime?
+  errorMessage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([eventType, status])
+  @@index([createdAt])
 }
