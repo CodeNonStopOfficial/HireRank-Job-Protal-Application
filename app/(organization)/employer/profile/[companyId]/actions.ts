@@ -48,6 +48,7 @@ export async function EditCompanyProfile(
         xAccount: validateData.xAccount,
         linkedin: validateData.linkedin,
         employes: validateData.employes,
+        organization : validateData.organization
       },
     });
 

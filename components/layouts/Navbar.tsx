@@ -25,8 +25,8 @@ export async function Navbar() {
           <Link href="/" className="flex items-center justify-center gap-2">
             <Image src={Logo} width={35} height={35} alt="Logo" />
             <h1 className="text-2xl font-bold text-blue-800">
-              Carrer
-              <span className="text-[25px] font-bold text-primary">Hub</span>
+              Hire
+              <span className="text-[25px] font-bold text-primary">Rank</span>
             </h1>
           </Link>
         </div>

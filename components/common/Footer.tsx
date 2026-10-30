@@ -55,7 +55,7 @@ export function Footer() {
               </div>
 
               <span className="text-2xl font-bold tracking-tight">
-                Job<span className="text-primary">Nest</span>
+                Hire<span className="text-primary">Rank</span>
               </span>
             </Link>
 

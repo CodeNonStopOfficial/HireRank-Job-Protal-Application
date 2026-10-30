@@ -55,6 +55,7 @@ export function EditCompanyProfileForm({ data }: iAppPropsProfile) {
       xAccount: data.xAccount ?? "",
       employes: data.employes ?? "",
       linkedin: data.linkedin ?? "",
+      organization : data.organization ?? ""
     },
   });
 
@@ -140,6 +141,35 @@ export function EditCompanyProfileForm({ data }: iAppPropsProfile) {
                   <Field data-invalid={fieldState.invalid} className="gap-2">
                     <FieldLabel htmlFor={field.name}>
                       Company Name <span className="text-destructive">*</span>
+                    </FieldLabel>
+
+                    <div className="relative">
+                      <Building2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+
+                      <Input
+                        {...field}
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                        placeholder="e.g. Acme Technologies"
+                        autoComplete="organization"
+                        className="h-11 pl-9"
+                      />
+                    </div>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="organization"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className="gap-2">
+                    <FieldLabel htmlFor={field.name}>
+                      Organization and Indrustry <span className="text-destructive">*</span>
                     </FieldLabel>
 
                     <div className="relative">

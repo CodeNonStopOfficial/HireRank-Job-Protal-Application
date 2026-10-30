@@ -90,6 +90,7 @@ model Company {
   xAccount String?
   linkedin String?
   employes String?
+  organization String?
   
 
   userId String @unique

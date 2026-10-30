@@ -18,7 +18,8 @@ export const companySchema = z.object({
   website: z.string().url("Please enter a valid website URL"),
   xAccount: z.string().optional(),
   linkedin: z.url().optional(),
-  employes: z.string().optional()
+  employes: z.string().optional(),
+  organization : z.string().optional()
 });
 
 export const jobSeekerSchema = z.object({

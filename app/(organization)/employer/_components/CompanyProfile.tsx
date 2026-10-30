@@ -31,7 +31,7 @@ export function CompanyProfileComponent({ company }: IAppCompanyProfil) {
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl">Company Profile</CardTitle>
 
-          <Badge variant="secondary">Company</Badge>
+          <Badge variant="secondary">{company.organization}</Badge>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start gap-3">
