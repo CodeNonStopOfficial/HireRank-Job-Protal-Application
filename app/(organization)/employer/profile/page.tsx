@@ -8,7 +8,7 @@ export default async function CompanyProfilePage(){
         return notFound();
     }
     return (
-        <div>
+        <div className="min-h-screen max-w-full">
             <CompanyProfileComponent company={data}/>
         </div>
     )

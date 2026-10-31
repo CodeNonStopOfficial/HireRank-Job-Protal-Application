@@ -6,8 +6,10 @@ import { BarChartComponentDashbaord } from "@/components/company/BarChartCompone
 import { InterviewActivityChart } from "@/components/company/InterviewActivityChart";
 import { JobsByCategoryChart } from "@/components/company/JobsByCategoryChart";
 import { ApplicationStatusChart } from "@/components/company/ApplicationStatusChart";
+import { GetJobDataByCategoryChart } from "@/app/services/employer/getchart-jobdata";
 
-export default function EmployerDashboardPage() {
+export default async function EmployerDashboardPage() {
+  const chartData = await GetJobDataByCategoryChart();
   return (
     <section className="min-h-screen max-w-full py-4">
       <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-2">
@@ -15,7 +17,7 @@ export default function EmployerDashboardPage() {
           <DashboardMenuCard />
           <BarChartComponentDashbaord />
           <InterviewActivityChart/>
-          <JobsByCategoryChart/>
+          <JobsByCategoryChart chartData={chartData}/>
         </div>
         <div>
           <UpcomingInterviewSchedule />

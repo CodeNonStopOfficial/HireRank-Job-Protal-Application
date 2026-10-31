@@ -23,16 +23,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GetJobDataByCategoryChartType } from "@/app/services/employer/getchart-jobdata";
 
-const chartData = [
-  { category: "Frontend", jobs: 24 },
-  { category: "Backend", jobs: 18 },
-  { category: "Full Stack", jobs: 32 },
-  { category: "UI/UX", jobs: 14 },
-  { category: "DevOps", jobs: 9 },
-  { category: "Data Science", jobs: 21 },
-];
 
+
+interface iAppPros {
+    chartData : GetJobDataByCategoryChartType
+}[]
 const chartConfig = {
   jobs: {
     label: "Jobs",
@@ -40,7 +37,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function JobsByCategoryChart() {
+export function JobsByCategoryChart({chartData}:iAppPros) {
   const totalJobs = chartData.reduce(
     (total, item) => total + item.jobs,
     0
@@ -100,7 +97,7 @@ export function JobsByCategoryChart() {
               tickLine={false}
               axisLine={false}
               tickMargin={10}
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 7, fontWeight: 500 }}
               interval={0}
             />
 
