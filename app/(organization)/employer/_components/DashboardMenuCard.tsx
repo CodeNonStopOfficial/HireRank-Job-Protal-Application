@@ -39,7 +39,7 @@ const dashboardArrayMenu = [
 export function DashboardMenuCard() {
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
+      <div className="grid grid-cols-1 w-full md:grid-cols-3 lg:grid-cols-4 gap-2 ">
         {dashboardArrayMenu.map((data,index) => (
           <Card key={index +1} className="group w-full overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             <CardContent>
