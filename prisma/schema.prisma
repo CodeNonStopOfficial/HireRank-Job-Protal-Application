@@ -34,6 +34,7 @@ model User {
   updatedAt         DateTime           @updatedAt
   userSubscriptions UserSubscription[]
   payments          Payment[]
+  jobBookmarks      JobBookmark[]
 
   @@index([role])
 }
@@ -192,9 +193,11 @@ model Job {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  publishedAt  DateTime?
+  jobBookmarks JobBookmark[]
+  isBookmarked Boolean? @default(false)
 
   @@index([companyId])
   @@index([status, createdAt])
@@ -367,4 +370,19 @@ model RazorpayWebhookEvent {
 
   @@index([eventType, status])
   @@index([createdAt])
+}
+
+// bookmark job 
+
+model JobBookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
 }

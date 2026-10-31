@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { buttonVariants } from "../ui/button";
+import { BookmarkButton } from "./BookMarkButton";
 
 interface iAppPros {
   data: getDataPublicJobType;
@@ -44,102 +45,111 @@ export function PublicPerCardJobComponent({ data }: iAppPros) {
   const salary = formatSalary();
 
   return (
-    <Card className="group relative overflow-hidden rounded-2xl border border-border/70 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl">
+    <Card className="group relative h-full overflow-hidden rounded-xl border-border/70 bg-card transition-all duration-200 hover:border-primary/40 hover:shadow-md">
       {/* Top accent */}
-      <div className="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-primary/70 via-primary to-primary/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-primary transition-transform duration-300 group-hover:scale-x-100" />
 
-      <CardContent className="p-5 sm:p-6">
-        <div className="flex flex-col gap-5 sm:flex-row">
-          {/* Company logo */}
-          <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-            {data.company.logo ? (
-              <Image
-                src={data.company.logo}
-                alt={`${data.company.name} logo`}
-                width={56}
-                height={56}
-                className="size-full object-cover"
-              />
-            ) : (
-              <User2 className="size-7 text-muted-foreground" />
-            )}
-          </div>
-
-          {/* Main job information */}
-          <div className="min-w-0 flex-1 space-y-3">
-            <div>
-              <Link
-                href={`/get-started/${data.id}`}
-                className="inline-flex items-center gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                <h2 className="text-lg font-bold tracking-tight transition-colors hover:text-primary sm:text-xl">
-                  {data.title}
-                </h2>
-                <ArrowUpRight className="size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
-              </Link>
-
-              <p className="mt-1 text-sm font-medium text-muted-foreground">
-                {data.company.name}
-              </p>
-            </div>
-
-            {/* Job details */}
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1.5 text-xs font-medium capitalize">
-                <BriefcaseBusiness className="size-3.5" />
-                {data.workplaceType}
-              </span>
-
-              <span className="inline-flex items-center gap-1.5 rounded-full border bg-muted/50 px-3 py-1.5 text-xs font-medium capitalize">
-                <Clock3 className="size-3.5" />
-                {data.employmentType}
-              </span>
-
-              {salary && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                  <Wallet className="size-3.5" />
-                  {salary}
-                </span>
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex flex-col gap-3">
+          {/* Header */}
+          <div className="flex items-start gap-3">
+            {/* Company logo */}
+            <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted sm:size-12">
+              {data.company.logo ? (
+                <Image
+                  src={data.company.logo}
+                  alt={`${data.company.name} logo`}
+                  width={48}
+                  height={48}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <User2 className="size-5 text-muted-foreground" />
               )}
             </div>
 
-            {/* Company description */}
-            {data.company.about && (
-              <p className="line-clamp-2 text-sm leading-6 text-muted-foreground">
-                {data.company.about}
+            {/* Job title and company */}
+            <div className="min-w-0 flex-1">
+              <Link
+                href={`/get-started/${data.id}`}
+                className="group/title inline-flex max-w-full items-start gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <h2 className="line-clamp-2 text-sm font-semibold leading-5 transition-colors group-hover/title:text-primary sm:text-base">
+                  {data.title}
+                </h2>
+
+                <ArrowUpRight className="mt-0.5 size-3.5 shrink-0 text-muted-foreground opacity-90 transition-opacity group-hover/title:opacity-100" />
+              </Link>
+
+             <div className="flex items-center gap-2 ">
+               <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">
+                {data.company.name}
               </p>
+
+              <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <MapPin className="size-3.5 shrink-0 text-primary" />
+                <span className="truncate">{data.location}</span>
+              </p>
+             </div>
+            </div>
+
+            {/* Bookmark */}
+            <div className="shrink-0">
+              <BookmarkButton
+                jobId={data.id}
+                initialBookmarked={data.isBookmarked === true}
+              />
+            </div>
+          </div>
+
+          {/* Job details */}
+          <div className="flex flex-wrap gap-1.5">
+            <span className="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-1 text-[11px] font-medium capitalize sm:text-xs">
+              <BriefcaseBusiness className="size-3 text-primary" />
+              {data.workplaceType}
+            </span>
+
+            <span className="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-1 text-[11px] font-medium capitalize sm:text-xs">
+              <Clock3 className="size-3 text-primary" />
+              {data.employmentType}
+            </span>
+
+            {salary && (
+              <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 sm:text-xs">
+                <Wallet className="size-3" />
+                {salary}
+              </span>
             )}
           </div>
 
-          {/* Location, date, and application */}
-          <div className="flex flex-col items-start justify-between gap-4 sm:min-w-40 sm:items-end">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:justify-end">
-                <MapPin className="size-4 shrink-0 text-primary" />
-                <span className="line-clamp-2 sm:text-right">
-                  {data.location}
-                </span>
-              </div>
+          {/* Company description */}
+          {data.company.about && (
+            <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">
+              {data.company.about}
+            </p>
+          )}
 
-              <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Clock className="size-4 shrink-0 text-primary" />
-                {new Date(data.createdAt).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
+          {/* Footer */}
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-3">
+            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground sm:text-xs">
+              <Clock className="size-3.5 shrink-0 text-primary" />
+              {new Date(data.createdAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </p>
 
             <Link
               href={`/get-started/apply-job/${data.id}`}
               className={buttonVariants({
-                variant: "outline",
-                className: "px-6 py-4.5",
+                size: "sm",
+                className: "h-8 gap-1.5 px-3 text-xs",
               })}
-            > 
-              Apply Job
-            </Link> 
+            >
+              Apply Now
+              <ArrowUpRight className="size-3.5" />
+            </Link>
           </div>
         </div>
       </CardContent>

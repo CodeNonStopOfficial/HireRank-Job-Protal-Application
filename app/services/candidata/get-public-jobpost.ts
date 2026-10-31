@@ -18,6 +18,7 @@ export async function getDataPublicJob() {
       salaryCurrency : true,
       experienceLevel : true,
       department : true,
+      isBookmarked : true,
       company: {
         select: {
           id: true,

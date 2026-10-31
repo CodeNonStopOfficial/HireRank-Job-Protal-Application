@@ -13,11 +13,12 @@ import Image from "next/image";
 import { getDataPublicJobType } from "@/app/services/candidata/get-public-jobpost";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { BookmarkButton } from "@/components/common/BookMarkButton";
 interface iAppPross {
   jobs: getDataPublicJobType;
 }
 
-export function JobCardComponent({ jobs }: iAppPross) {
+export function JobCardComponent({ jobs}: iAppPross) {
   const formatSalary = () => {
     if (jobs.salaryMin == null && jobs.salaryMax == null) {
       return null;
@@ -77,7 +78,8 @@ export function JobCardComponent({ jobs }: iAppPross) {
               </div>
             </div>
             <span className="text-green-800">
-              <Bookmark />
+              {/* <Bookmark /> */}
+              <BookmarkButton jobId={jobs.id} initialBookmarked={jobs.isBookmarked as boolean}/>
             </span>
           </div>
           <div className="py-4">
