@@ -14,12 +14,11 @@ export async function createJobPostMethod(
   try {
     const validateData = createJobSchema.safeParse(data);
 
-
-    if(!validateData.success){
-         return {
-             status : "error",
-             message : "Job Schema Invalide Error..?"
-         }
+    if (!validateData.success) {
+      return {
+        status: "error",
+        message: "Job Schema Invalide Error..?",
+      };
     }
     const company = await prisma.company.findUnique({
       where: {
@@ -62,18 +61,17 @@ export async function createJobPostMethod(
 }
 export async function updateJobPostMethod(
   data: z.infer<typeof createJobSchema>,
-  jobId:string
+  jobId: string,
 ): Promise<ApiResponse> {
   const user = await requireCompany();
   try {
     const validateData = createJobSchema.safeParse(data);
 
-
-    if(!validateData.success){
-         return {
-             status : "error",
-             message : "Job Schema Invalide Error..?"
-         }
+    if (!validateData.success) {
+      return {
+        status: "error",
+        message: "Job Schema Invalide Error..?",
+      };
     }
     const company = await prisma.company.findUnique({
       where: {
@@ -94,8 +92,8 @@ export async function updateJobPostMethod(
     }
 
     await prisma.job.update({
-      where : {
-        id : jobId
+      where: {
+        id: jobId,
       },
       data: {
         ...validateData.data,
@@ -114,6 +112,47 @@ export async function updateJobPostMethod(
     return {
       status: "error",
       message: "Internal Job Update Error",
+    };
+  }
+}
+
+export async function deleteJobByIdMethod(jobId: string): Promise<ApiResponse> {
+  const session = await requireCompany();
+  if (!session) {
+    return {
+      status: "error",
+      message: "User ID Not Found",
+    };
+  }
+  const company = await prisma.company.findUnique({
+    where: {
+      userId: session.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+  if (!company?.id) {
+    return {
+      status: "error",
+      message: "Company Not Found",
+    };
+  }
+  await prisma.job.delete({
+    where: {
+      id: jobId,
+      companyId: company.id,
+    },
+  });
+  try {
+    return {
+      status: "success",
+      message: "Job Deleted Successfully",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Failed to Delete Job",
     };
   }
 }

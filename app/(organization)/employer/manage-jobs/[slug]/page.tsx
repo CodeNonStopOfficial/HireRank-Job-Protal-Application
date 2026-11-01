@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getSingleJobDetalsPage } from "@/app/services/employer/getjob-details";
 import {
   ArrowLeft,
-  ArrowUpRight,
   BriefcaseBusiness,
   Building2,
   CheckCircle2,
@@ -15,6 +14,14 @@ import {
   Laptop,
 } from "lucide-react";
 import { JsonToHtml } from "@/components/tiptap/JsonTiptapContent";
+import { DeleteJobButton } from "@/components/company/DeleteJobButtonComponent";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
@@ -374,14 +381,24 @@ export default async function PostDetailsPage({ params }: IAppProps) {
           </aside>
         </div>
         {/* Bottom navigation */}
-        <div className="mt-8">
-          <Link
-            href="/jobs"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400"
-          >
-            <ArrowLeft size={16} />
-            Explore more opportunities
-          </Link>
+        <div className="mt-8 flex items-center gap-2">
+          <Card className="w-full px-4 py-4">
+            <CardHeader className="px-0">
+              <CardTitle>Delete Job Permanently</CardTitle>
+              <CardDescription>
+                Are you sure you want to permanently delete this job? This
+                action cannot be undone.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="px-0">
+              <DeleteJobButton
+                jobId={slug}
+                title="Delete Job Permanently"
+                className="gap-2"
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>
