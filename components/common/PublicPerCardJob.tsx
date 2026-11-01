@@ -97,7 +97,7 @@ export function PublicPerCardJobComponent({ data }: iAppPros) {
             <div className="shrink-0">
               <BookmarkButton
                 jobId={data.id}
-                initialBookmarked={data.isBookmarked === true}
+                initialBookmarked={data.isBookmarked ?? false}
               />
             </div>
           </div>

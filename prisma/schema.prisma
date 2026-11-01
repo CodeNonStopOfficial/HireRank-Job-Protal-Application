@@ -35,6 +35,7 @@ model User {
   userSubscriptions UserSubscription[]
   payments          Payment[]
   jobBookmarks      JobBookmark[]
+  interview         Interview[]
 
   @@index([role])
 }
@@ -197,7 +198,7 @@ model Job {
   updatedAt    DateTime      @updatedAt
   publishedAt  DateTime?
   jobBookmarks JobBookmark[]
-  isBookmarked Boolean? @default(false)
+  isBookmarked Boolean?      @default(false)
 
   @@index([companyId])
   @@index([status, createdAt])
@@ -385,4 +386,40 @@ model JobBookmark {
 
   @@unique([userId, jobId])
   @@index([userId])
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Interview {
+  id String @id @default(cuid())
+
+  recruiterId   String
+  candidateId   String
+  applicationId String
+
+  zoomSessionName String @unique
+
+  scheduledAt DateTime
+  duration    Int      @default(30)
+
+  status InterviewStatus @default(SCHEDULED)
+
+  startedAt DateTime?
+  endedAt   DateTime?
+
+  feedback String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+
+  @@index([recruiterId])
+  @@index([candidateId])
+  @@index([applicationId])
 }
