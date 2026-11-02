@@ -1,5 +1,10 @@
 "use client";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants, Button } from "@/components/ui/button";
@@ -11,6 +16,7 @@ import {
   MapPin,
   Award,
   Pencil,
+  EllipsisVertical,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DeleteButtonComponent } from "@/components/candidate/DeleteButtonComponent";
 
 interface iAppProsExprience {
   data: {
@@ -87,16 +94,30 @@ export default function ShowExprienceComponent({ data }: iAppProsExprience) {
               </div>
 
               {/* Edit Button */}
-              <Link
-                href={`profile/experience/${data.jobSeekerId}`}
-                className={buttonVariants({
-                  variant: "outline",
-                  className: "p-2",
-                })}
-              >
-                <Pencil className="size-4" />
-                <span className="hidden sm:inline">Edit</span>
-              </Link>
+              <DropdownMenu>
+                <DropdownMenuTrigger render={<Button variant="outline" />}>
+                  <EllipsisVertical className="size-4 text-primary" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuGroup className="flex flex-col gap-2">
+                    <Link
+                      href={`profile/experience/${data.id}`}
+                      className={buttonVariants({
+                        variant: "outline",
+                        className: "p-2 w-full items-center justify-start",
+                      })}
+                    >
+                      <Pencil className="size-4" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </Link>
+                    <div>
+                      <DeleteButtonComponent
+                        experienceId={data.id}
+                      />
+                    </div>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Date Range */}

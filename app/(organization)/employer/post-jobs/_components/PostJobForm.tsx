@@ -100,10 +100,9 @@ function SectionHeading({
 type PostJobFormProps = {
   mode: "create" | "update";
   initialData?: GetSingleJobDetalsType;
-  jobId?: string;
 };
 
-export function PostJobForm({ mode, initialData, jobId }: PostJobFormProps) {
+export function PostJobForm({ mode, initialData}: PostJobFormProps) {
   const isEdit = mode === "update";
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

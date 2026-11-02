@@ -43,17 +43,23 @@ import {
   RotateCcw,
   Upload,
 } from "lucide-react";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { CreateExprienceFormMethod } from "../actions";
+import {
+  CreateExprienceFormMethod,
+  UpdateExprienceFormMethod,
+} from "../actions";
 import { tryCatch } from "@/hooks/try-catchs";
 import { useRouter } from "next/navigation";
+import { GetExperienceDataByIdType } from "@/app/services/users/get-exprience-databyid";
+import Image from "next/image";
 
 interface iAppProsExprience {
   mode: "create" | "update";
+  exprience?: GetExperienceDataByIdType;
 }
 
-export function CreateExprienceForm({ mode }: iAppProsExprience) {
+export function CreateExprienceForm({ mode, exprience }: iAppProsExprience) {
   const stepmode = mode === "create";
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -74,9 +80,30 @@ export function CreateExprienceForm({ mode }: iAppProsExprience) {
     },
   });
 
+  useEffect(() => {
+    if (exprience) {
+      form.reset({
+        companyName: exprience.companyName ?? "",
+        companyLogo: null,
+        position: exprience.position ?? "",
+        startDate: exprience.startDate ?? "",
+        endDate: exprience.endDate ?? "",
+        workDescription: exprience.workDescription ?? "",
+        projectLink: exprience.projectLink ?? "",
+        certificationUrl: exprience.certificationUrl ?? "",
+        workType: exprience.workType ?? "ONSITE",
+        employmentType: exprience.employmentType ?? "FULL_TIME",
+      });
+    }
+  }, [exprience, form]);
+
   function onSubmit(value: createExprienceSchemaType) {
     startTransition(async () => {
-      const { data, error } = await tryCatch(CreateExprienceFormMethod(value));
+      const { data, error } = await tryCatch(
+        stepmode
+          ? CreateExprienceFormMethod(value)
+          : UpdateExprienceFormMethod(value, exprience!.id),
+      );
       if (error) {
         toast.add({
           type: "error",
@@ -90,7 +117,7 @@ export function CreateExprienceForm({ mode }: iAppProsExprience) {
           type: "success",
           title: data.message,
         });
-
+        form.reset();
         router.push("/candidate/profile");
       } else if (data?.status === "error") {
         toast.add({
