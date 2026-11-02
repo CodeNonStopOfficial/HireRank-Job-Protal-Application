@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface iAppProsExprience {
   data: {
@@ -10,7 +10,6 @@ interface iAppProsExprience {
     position: string;
     startDate: string;
     endDate: string | null;
-    aboutCompany: string | null;
     workDescription: string | null;
     projectLink: string | null;
     certificationUrl: string | null;

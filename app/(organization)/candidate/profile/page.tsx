@@ -22,8 +22,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import Resume from "../_components/ResumeShow";
-import ShowEducationComponent from "@/components/candidate/ShowEducationComponent";
-import ShowExprienceComponent from "@/components/candidate/ShowExperienceComponent";
+import ShowEducationComponent from "@/app/(organization)/candidate/profile/_components/ShowEducationComponent";
+import ShowExprienceComponent from "@/app/(organization)/candidate/profile/_components/ShowExperienceComponent";
 import { buttonVariants } from "@/components/ui/button";
 
 export default async function CandidateProfilePage() {

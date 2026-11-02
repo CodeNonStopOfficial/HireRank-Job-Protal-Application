@@ -1,7 +1,11 @@
+import { CreateExprienceForm } from "../_components/CreateExprienceForm";
+
 export default function CreateExpriencePage() {
   return (
-    <div>
-      <h1>EXP</h1>
-    </div>
+     <>
+      <div className="min-h-screen max-w-full py-2">
+          <CreateExprienceForm/>
+      </div>
+     </> 
   );
 }

@@ -19,7 +19,7 @@ export const companySchema = z.object({
   xAccount: z.string().optional(),
   linkedin: z.url().optional(),
   employes: z.string().optional(),
-  organization : z.string().optional()
+  organization: z.string().optional(),
 });
 
 export const jobSeekerSchema = z.object({
@@ -97,3 +97,55 @@ export const createJobSchema = z.object({
 });
 
 export type CreateJobInputType = z.infer<typeof createJobSchema>;
+
+
+export const createExprienceSchema = z.object({
+  companyName: z
+    .string()
+    .min(3, "Company name must be at least 3 characters")
+    .max(50, "Company name must be less than 50 characters"),
+
+  companyLogo: uploadedFileSchema.nullable().optional(),
+
+  position: z
+    .string()
+    .min(3, "Position must be at least 3 characters")
+    .max(50, "Position must be less than 50 characters"),
+
+  startDate: z
+    .string()
+    .min(1, "Please add your work start date")
+    .max(20, "Start date is too long"),
+
+  endDate: z
+    .string()
+    .max(20, "End date is too long")
+    .optional()
+    .or(z.literal("")),
+
+  workDescription: z
+    .string()
+    .min(50, "Description must be at least 50 characters")
+    .max(300, "Description must be less than 300 characters")
+    .optional()
+    .or(z.literal("")),
+
+  projectLink: z.union([z.url(), z.literal("")]).optional(),
+
+  certificationUrl: z.union([z.url(), z.literal("")]).optional(),
+
+  workType: z.enum(["ONSITE", "REMOTE", "HYBRID"]),
+
+  employmentType: z.enum([
+    "FULL_TIME",
+    "PART_TIME",
+    "CONTRACT",
+    "INTERNSHIP",
+    "TEMPORARY",
+    "FREELANCE",
+  ]),
+});
+
+export type createExprienceSchemaType = z.infer<
+  typeof createExprienceSchema
+>;

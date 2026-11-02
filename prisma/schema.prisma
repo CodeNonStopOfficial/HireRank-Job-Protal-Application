@@ -129,19 +129,20 @@ model JobSeeker {
 }
 
 model Experience {
-  id               String    @id @default(uuid())
+  id               String          @id @default(uuid())
   companyName      String
   companyLogo      String?
   position         String
   startDate        String
   endDate          String?
-  aboutCompany     String?
   workDescription  String?
   projectLink      String?
   certificationUrl String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  jobSeeker        JobSeeker @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+  workType         WorkplaceType @default(ONSITE)
+  employmentType  EmploymentType @default(FULL_TIME)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  jobSeeker        JobSeeker       @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
   jobSeekerId      String
 
   @@index([jobSeekerId])
