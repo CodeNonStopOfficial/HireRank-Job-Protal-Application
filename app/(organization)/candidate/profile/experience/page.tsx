@@ -4,7 +4,7 @@ export default function CreateExpriencePage() {
   return (
      <>
       <div className="min-h-screen max-w-full py-2">
-          <CreateExprienceForm/>
+          <CreateExprienceForm mode="create"/>
       </div>
      </> 
   );

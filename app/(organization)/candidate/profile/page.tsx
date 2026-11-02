@@ -215,7 +215,7 @@ export default async function CandidateProfilePage() {
               <div>
                 {(data.jobSeeker?.experience?.length ?? 0) > 0 ? (
                   <>
-                    <div>
+                    <div className="space-y-2.5">
                       {data.jobSeeker?.experience.map((exprience) => (
                         <ShowExprienceComponent
                           key={exprience.id}

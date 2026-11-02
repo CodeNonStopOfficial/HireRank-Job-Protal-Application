@@ -9,7 +9,13 @@ import { MediaUploader } from "@/components/common/media-uploader";
 import { TiptapRichTextEditor } from "@/components/tiptap/TipTapRichTextEditor";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Field,
   FieldGroup,
@@ -25,31 +31,48 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Award,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  Loader2,
+  Link2,
+  MapPin,
+  Plus,
+  RotateCcw,
+  Upload,
+} from "lucide-react";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CreateExprienceFormMethod } from "../actions";
 import { tryCatch } from "@/hooks/try-catchs";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus } from "lucide-react";
 
-export function CreateExprienceForm() {
+interface iAppProsExprience {
+  mode: "create" | "update";
+}
+
+export function CreateExprienceForm({ mode }: iAppProsExprience) {
+  const stepmode = mode === "create";
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
   const form = useForm<createExprienceSchemaType>({
-  resolver: zodResolver(createExprienceSchema),
-  defaultValues: {
-    companyName: "",
-    companyLogo: null,
-    position: "",
-    startDate: "",
-    endDate: "",
-    workDescription: "",
-    projectLink: "",
-    certificationUrl: "",
-    workType: "ONSITE",
-    employmentType: "FULL_TIME",
-  },
-});
+    resolver: zodResolver(createExprienceSchema),
+    defaultValues: {
+      companyName: "",
+      companyLogo: null,
+      position: "",
+      startDate: "",
+      endDate: "",
+      workDescription: "",
+      projectLink: "",
+      certificationUrl: "",
+      workType: "ONSITE",
+      employmentType: "FULL_TIME",
+    },
+  });
 
   function onSubmit(value: createExprienceSchemaType) {
     startTransition(async () => {
@@ -57,17 +80,19 @@ export function CreateExprienceForm() {
       if (error) {
         toast.add({
           type: "error",
-          title: "Invalide Server Error",
+          title: "Server Error",
         });
         return;
       }
+
       if (data?.status === "success") {
         toast.add({
           type: "success",
           title: data.message,
         });
+
         router.push("/candidate/profile");
-      } else if (data.status === "error") {
+      } else if (data?.status === "error") {
         toast.add({
           type: "error",
           title: data.message,
@@ -75,34 +100,56 @@ export function CreateExprienceForm() {
       } else {
         toast.add({
           type: "error",
-          title: "Failed to Create Exprience",
+          title: "Failed to create experience",
         });
       }
     });
   }
+
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Add Exprience Section</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+    <div className="mx-auto w-full max-w-5xl space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Basic Information */}
+        <Card className="overflow-hidden rounded-2xl border shadow-sm">
+          <CardHeader className="border-b bg-muted/30 p-4 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Building2 className="size-5" />
+              </div>
+
+              <div>
+                <CardTitle className="text-lg">
+                  {stepmode
+                    ? "Create Exprience Professional Information"
+                    : "Update Exprience Professional Information"}
+                </CardTitle>
+
+                <CardDescription>
+                  Enter your company and job details.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
             <FieldGroup>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {/* Company Name */}
                 <Controller
                   name="companyName"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
+
                       <Input
                         {...field}
                         id={field.name}
-                        type="text"
+                        placeholder="e.g. Google, Microsoft"
                         aria-invalid={fieldState.invalid}
-                        placeholder="Enter a Company Name"
+                        className="h-11"
                       />
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -110,19 +157,22 @@ export function CreateExprienceForm() {
                   )}
                 />
 
+                {/* Position */}
                 <Controller
                   name="position"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Position</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Job Position</FieldLabel>
+
                       <Input
                         {...field}
                         id={field.name}
-                        type="text"
+                        placeholder="e.g. Software Developer"
                         aria-invalid={fieldState.invalid}
-                        placeholder="Enter a Work Position"
+                        className="h-11"
                       />
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -130,158 +180,131 @@ export function CreateExprienceForm() {
                   )}
                 />
 
+                {/* Start Date */}
                 <Controller
                   name="startDate"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Start Date</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>
+                        <CalendarDays className="size-4" />
+                        Start Date
+                      </FieldLabel>
+
                       <Input
                         {...field}
                         id={field.name}
-                        type="text"
+                        placeholder="e.g. March 2025"
                         aria-invalid={fieldState.invalid}
-                        placeholder="March - 2025 or Present"
+                        className="h-11"
                       />
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
                     </Field>
                   )}
                 />
+
+                {/* End Date */}
                 <Controller
                   name="endDate"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>End Date</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>
+                        <CalendarDays className="size-4" />
+                        End Date
+                      </FieldLabel>
+
                       <Input
                         {...field}
                         id={field.name}
-                        type="text"
+                        placeholder="e.g. August 2026"
                         aria-invalid={fieldState.invalid}
-                        placeholder="ex.Aug-3034"
+                        className="h-11"
                       />
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
+
+                      <p className="text-xs text-muted-foreground">
+                        Leave empty if you are currently working here.
+                      </p>
                     </Field>
                   )}
                 />
+
+                {/* Employment Type */}
                 <Controller
                   name="employmentType"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Employment</FieldLabel>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
+                      <FieldLabel>
+                        <BriefcaseBusiness className="size-4" />
+                        Employment Type
+                      </FieldLabel>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          className="h-11 w-full"
+                          aria-invalid={fieldState.invalid}
+                        >
+                          <SelectValue placeholder="Select employment type" />
                         </SelectTrigger>
+
                         <SelectContent>
-                          {employmentOptions.map((data, index) => (
-                            <SelectItem key={index + 1} value={data.value}>
-                              {data.label}
+                          {employmentOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
                     </Field>
                   )}
                 />
+
+                {/* Work Type */}
                 <Controller
                   name="workType"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Work Type</FieldLabel>
-                      <Select>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
+                      <FieldLabel>
+                        <MapPin className="size-4" />
+                        Work Location Type
+                      </FieldLabel>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          className="h-11 w-full"
+                          aria-invalid={fieldState.invalid}
+                        >
+                          <SelectValue placeholder="Select work type" />
                         </SelectTrigger>
+
                         <SelectContent>
-                          <SelectItem value="ONSITE">ONSITE</SelectItem>
-                          <SelectItem value="REMOTE">REMOTE</SelectItem>
-                          <SelectItem value="HYBRID">HYBRID</SelectItem>
+                          <SelectItem value="ONSITE">On-site</SelectItem>
+
+                          <SelectItem value="REMOTE">Remote</SelectItem>
+
+                          <SelectItem value="HYBRID">Hybrid</SelectItem>
                         </SelectContent>
                       </Select>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="certificationUrl"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>
-                        Certification Link
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id={field.name}
-                        type="text"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="https://www.certification.com"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="projectLink"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Project Link</FieldLabel>
-                      <Input
-                        {...field}
-                        id={field.name}
-                        type="text"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="https://www.projectlink.com"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-              </div>
-              <div className="space-y-3">
-                <Controller
-                  name="workDescription"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-                      <TiptapRichTextEditor field={field as any} />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="companyLogo"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor={field.name}>Company Logo</FieldLabel>
-                      <MediaUploader
-                        accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                        maxSize="Maximum 4MB"
-                        value={field.value}
-                        onChange={field.onChange}
-                        endpoint="imageUploader"
-                      />
+
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -290,37 +313,211 @@ export function CreateExprienceForm() {
                 />
               </div>
             </FieldGroup>
-            <div className="my-4 flex items-center justify-end gap-3">
-              <Button
-                type="reset"
-                onClick={() => form.reset()}
-                variant="outline"
-                className="px-6 py-4.5"
-              >
-                Reset
-              </Button>
+          </CardContent>
+        </Card>
 
-              <Button type="submit" className="px-4 py-4.5">
-                {isPending ? (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <Loader2 className="size-4 animate-spin" />
-                      <span>Loading...</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <Plus className="size-4" />
-                      <span>Create Exprience</span>
-                    </div>
-                  </>
-                )}
-              </Button>
+        {/* Links Section */}
+        <Card className="overflow-hidden rounded-2xl border shadow-sm">
+          <CardHeader className="border-b bg-muted/30 p-4 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Link2 className="size-5" />
+              </div>
+
+              <div>
+                <CardTitle className="text-lg">Professional Links</CardTitle>
+
+                <CardDescription>
+                  Add your project and certification URLs.
+                </CardDescription>
+              </div>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </>
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* Project Link */}
+              <Controller
+                name="projectLink"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      <Link2 className="size-4" />
+                      Project Link
+                    </FieldLabel>
+
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="url"
+                      placeholder="https://your-project.com"
+                      aria-invalid={fieldState.invalid}
+                      className="h-11"
+                    />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              {/* Certification Link */}
+              <Controller
+                name="certificationUrl"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      <Award className="size-4" />
+                      Certification Link
+                    </FieldLabel>
+
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="url"
+                      placeholder="https://certificate.com"
+                      aria-invalid={fieldState.invalid}
+                      className="h-11"
+                    />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Description */}
+        <Card className="overflow-hidden rounded-2xl border shadow-sm">
+          <CardHeader className="border-b bg-muted/30 p-4 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <BriefcaseBusiness className="size-5" />
+              </div>
+
+              <div>
+                <CardTitle className="text-lg">Work Description</CardTitle>
+
+                <CardDescription>
+                  Describe your responsibilities, skills, and achievements.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
+            <Controller
+              name="workDescription"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+
+                  <div className="min-w-0 overflow-hidden rounded-xl border">
+                    <TiptapRichTextEditor field={field as any} />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+
+                  <p className="text-xs text-muted-foreground">
+                    Provide a clear summary of your work experience.
+                  </p>
+                </Field>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Company Logo */}
+        <Card className="overflow-hidden rounded-2xl border shadow-sm">
+          <CardHeader className="border-b bg-muted/30 p-4 sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Upload className="size-5" />
+              </div>
+
+              <div>
+                <CardTitle className="text-lg">Company Logo</CardTitle>
+
+                <CardDescription>
+                  Upload your company logo to make your profile look
+                  professional.
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
+            <Controller
+              name="companyLogo"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Upload Logo</FieldLabel>
+
+                  <div className="rounded-xl border border-dashed bg-muted/20 p-3 sm:p-5">
+                    <MediaUploader
+                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      maxSize="Maximum 4MB"
+                      value={field.value}
+                      onChange={field.onChange}
+                      endpoint="imageUploader"
+                    />
+                  </div>
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+
+                  <p className="text-xs text-muted-foreground">
+                    Supported formats: PNG, JPG, WEBP, SVG. Maximum size: 4MB.
+                  </p>
+                </Field>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Form Actions */}
+        <div className="sticky bottom-0 z-10 -mx-2 flex flex-col-reverse gap-3 border-t bg-background/95 p-3 backdrop-blur sm:static sm:mx-0 sm:flex-row sm:justify-end sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+          <Button
+            type="reset"
+            variant="outline"
+            disabled={isPending}
+            onClick={() => form.reset()}
+            className="h-11 w-full gap-2 sm:w-auto"
+          >
+            <RotateCcw className="size-4" />
+            Reset Form
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="h-11 w-full gap-2 sm:w-auto"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Please wait...
+              </>
+            ) : (
+              <>
+                <Plus className="size-4" />
+                {stepmode ? "Create Experience" : "Update Experience"}
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }
