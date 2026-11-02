@@ -13,6 +13,7 @@ import {
   BadgeCheck,
   BadgeX,
   BriefcaseBusiness,
+  Edit,
   Globe,
   GraduationCap,
   MapPin,
@@ -47,7 +48,7 @@ export default async function CandidateProfilePage() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
-                <div className="flex items-start justify-start gap-6">
+                <div className="flex items-start justify-start gap-4">
                   <div>
                     {data.image ? (
                       <>
@@ -105,34 +106,34 @@ export default async function CandidateProfilePage() {
                           data.jobSeeker?.linkeding ??
                           "https://www.linkedin.com"
                         }
-                        className="border p-2 rounded-2xl dark:bg-gray-900"
+                        className="border p-2 rounded dark:bg-gray-900"
                       >
-                        <LinkedIn className="size-6" />
+                        <LinkedIn className="size-4" />
                       </Link>
                       <Link
                         href={
                           data.jobSeeker?.githubUrl ?? "https://www.github.com"
                         }
-                        className="border p-2 rounded-2xl dark:bg-gray-900"
+                        className="border p-2 rounded dark:bg-gray-900"
                       >
-                        <Github className="size-6 dark:fill-gray-100" />
+                        <Github className="size-4 dark:fill-gray-100" />
                       </Link>
                       <Link
                         href={
                           data.jobSeeker?.website ?? "https://www.website.com"
                         }
-                        className="border p-2 rounded-2xl dark:bg-gray-900"
+                        className="border p-2 rounded dark:bg-gray-900"
                       >
-                        <Globe className="size-6 text-primary" />
+                        <Globe className="size-4 text-primary" />
                       </Link>
                       <Link
                         href={
                           data.jobSeeker?.xAccount ??
                           "https://www.x-account.com"
                         }
-                        className="border p-2 rounded-2xl dark:bg-gray-900"
+                        className="border p-2 rounded dark:bg-gray-900"
                       >
-                        <XformerlyTwitter className="size-6" />
+                        <XformerlyTwitter className="size-4" />
                       </Link>
                     </div>
                   </div>
@@ -142,18 +143,40 @@ export default async function CandidateProfilePage() {
           </Card>
           {/* about card  */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <Card className="h-fit">
-              <CardContent className="space-y-1">
-                <h1 className="text-xl font-bold">About Me</h1>
-                <div>
-                  {data.jobSeeker?.about ? (
-                    <span>{data.jobSeeker?.about}</span>
-                  ) : (
-                    <span>Not About Conent</span>
+            <div className="flex flex-col gap-4">
+              <Card className="h-fit">
+                <CardContent className="space-y-1">
+                  <h1 className="text-xl font-bold">About Me</h1>
+                  <div>
+                    {data.jobSeeker?.about ? (
+                      <span>{data.jobSeeker?.about}</span>
+                    ) : (
+                      <span>Not About Conent</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="h-fit">
+                <CardContent className="space-y-1">
+                  <h1 className="text-xl font-bold">Skills</h1>
+                  {(data.jobSeeker?.skills.length ?? 0) > 0 ? (
+                    <div>
+                    {data.jobSeeker?.skills.map((data, index) => (
+                      <div key={index + 1}>
+                        <span>{data}</span>
+                      </div>
+                    ))}
+                  </div>
+                  ):(
+                    <>
+                     <div className="mt-2 items-center">
+                       <h1 className="text-sm font-semibold text-muted-foreground">Skills Not Available</h1>
+                     </div>
+                    </>
                   )}
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
             {/* resume view  */}
             <Card className="h-fit">
               <CardContent>
@@ -182,14 +205,26 @@ export default async function CandidateProfilePage() {
                     </svg>
                   </Link>
                 </div>
-                <div className="max-w-full mt-2">
+                <div className="max-w-full mt-2 flex items-end justify-end gap-2">
+                  <Link
+                    href={`/candidate/profile/${data.id}`}
+                    className={buttonVariants({
+                      variant: "default",
+                      className:
+                        "py-5.5 px-6 flex text-primary items-center gap-1",
+                    })}
+                  >
+                    <Edit className="size-4" />
+                    <span>Edit Profile</span>
+                  </Link>
+
                   <Resume data={data.jobSeeker?.resume as string} />
                 </div>
               </CardContent>
             </Card>
           </div>
           {/* // education and expreince  */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 py-6 border rounded-xl bg-background">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 py-8 border rounded-xl bg-background">
             {/* Experience */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -212,7 +247,7 @@ export default async function CandidateProfilePage() {
                 progression, including full-time, part-time, and internship
                 roles.
               </p>
-              <div>
+              <div className="py-5">
                 {(data.jobSeeker?.experience?.length ?? 0) > 0 ? (
                   <>
                     <div className="space-y-2.5">
@@ -259,7 +294,7 @@ export default async function CandidateProfilePage() {
                 Explore academic background, educational qualifications,
                 degrees, certifications, and achievements.
               </p>
-              <div>
+              <div className="py-5">
                 {(data.jobSeeker?.education?.length ?? 0) > 0 ? (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-1 gap-2">

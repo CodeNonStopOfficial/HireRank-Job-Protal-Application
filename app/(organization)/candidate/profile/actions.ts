@@ -4,6 +4,8 @@ import { requiredUser } from "@/app/utils/requiredUser";
 import {
   createExprienceSchema,
   createExprienceSchemaType,
+  educationSchema,
+  EducationSchemaType,
 } from "@/app/utils/zodSchema";
 import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
@@ -53,7 +55,7 @@ export async function CreateExprienceFormMethod(
     await prisma.experience.create({
       data: {
         ...experienceData,
-        companyLogo: companyLogo?.url ?? "",
+        companyLogo: companyLogo?.url,
         jobSeeker: {
           connect: {
             id: jobSeeker.id,
@@ -126,7 +128,7 @@ export async function UpdateExprienceFormMethod(
       },
       data: {
         ...experienceData,
-        companyLogo: companyLogo?.url ?? "",
+        companyLogo: companyLogo?.url,
       },
     });
 
@@ -144,11 +146,7 @@ export async function UpdateExprienceFormMethod(
   }
 }
 
-
-
-export async function DeleteExprienceFormMethod(
-  experienceId: string
-) {
+export async function DeleteExprienceFormMethod(experienceId: string) {
   try {
     const session = await requiredUser();
 
@@ -208,6 +206,192 @@ export async function DeleteExprienceFormMethod(
     return {
       status: "error",
       message: "Failed to delete experience",
+    };
+  }
+}
+
+
+// Education Action 
+
+export async function CreateEducationMethod(
+  data: EducationSchemaType,
+): Promise<ApiResponse> {
+  try {
+    const session = await requiredUser();
+    if (!session.id) {
+      return {
+        status: "error",
+        message: "User Not Found",
+      };
+    }
+    const validationData = educationSchema.safeParse(data);
+    if (!validationData.success) {
+      return {
+        status: "error",
+        message: validationData.error.issues
+          .map((issue) => issue.message)
+          .join(", "),
+      };
+    }
+    const seeker = await prisma.jobSeeker.findUnique({
+      where: {
+        userId: session.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!seeker) {
+      return {
+        status: "error",
+        message: "Job seeker profile not found",
+      };
+    }
+    const { collegeLogo, ...educationDatas } = validationData.data;
+    await prisma.education.create({
+      data: {
+        ...educationDatas,
+        collegeLogo: collegeLogo?.url,
+        jobSeeker: {
+          connect: {
+            id: seeker.id,
+          },
+        },
+      },
+    });
+    return {
+      status: "success",
+      message: "Education Created Successfully",
+    };
+  } catch (error) {
+    console.log("Failed to Education Creating Error", error);
+    return {
+      status: "error",
+      message: "Failed to create education",
+    };
+  }
+}
+
+export async function UpdateEducationMethod(
+  data: EducationSchemaType,
+  educationId: string,
+): Promise<ApiResponse> {
+  try {
+    const session = await requiredUser();
+    if (!session.id) {
+      return {
+        status: "error",
+        message: "User Not Found",
+      };
+    }
+    const validationData = educationSchema.safeParse(data);
+    if (!validationData.success) {
+      return {
+        status: "error",
+        message: validationData.error.issues
+          .map((issue) => issue.message)
+          .join(", "),
+      };
+    }
+    const seeker = await prisma.jobSeeker.findUnique({
+      where: {
+        userId: session.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!seeker) {
+      return {
+        status: "error",
+        message: "Job seeker profile not found",
+      };
+    }
+    const { collegeLogo, ...educationDatas } = validationData.data;
+    await prisma.education.update({
+      where: {
+        id: educationId,
+        jobSeekerId : seeker.id
+      },
+      data: {
+        ...educationDatas,
+        collegeLogo: collegeLogo?.url,
+      },
+    });
+    return {
+      status: "success",
+      message: "Education Updated Successfully",
+    };
+  } catch (error) {
+    console.log("Failed to Education Updating Error", error);
+    return {
+      status: "error",
+      message: "Failed to Update Education",
+    };
+  }
+}
+
+
+export async function DeleteEducationFormMethod(educationId: string) {
+  try {
+    const session = await requiredUser();
+
+    if (!session.id) {
+      return {
+        status: "error",
+        message: "Unauthorized user",
+      };
+    }
+
+    const jobSeeker = await prisma.jobSeeker.findUnique({
+      where: {
+        userId: session.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!jobSeeker) {
+      return {
+        status: "error",
+        message: "Job seeker profile not found",
+      };
+    }
+
+    const education = await prisma.education.findFirst({
+      where: {
+        id: educationId,
+        jobSeekerId: jobSeeker.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!education) {
+      return {
+        status: "error",
+        message: "Education not found",
+      };
+    }
+
+    await prisma.education.delete({
+      where: {
+        id: education.id,
+      },
+    });
+
+    return {
+      status: "success",
+      message: "Education deleted successfully",
+    };
+  } catch (error) {
+    console.error("Delete Educaiton error:", error);
+
+    return {
+      status: "error",
+      message: "Failed to delete education",
     };
   }
 }

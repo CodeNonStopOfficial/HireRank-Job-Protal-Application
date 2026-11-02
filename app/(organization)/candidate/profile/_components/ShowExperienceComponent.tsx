@@ -112,7 +112,8 @@ export default function ShowExprienceComponent({ data }: iAppProsExprience) {
                     </Link>
                     <div>
                       <DeleteButtonComponent
-                        experienceId={data.id}
+                        type="exprience"
+                        deleteId={data.id}
                       />
                     </div>
                   </DropdownMenuGroup>

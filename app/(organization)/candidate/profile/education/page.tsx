@@ -1,7 +1,8 @@
+import {EducationCreationForm} from "../_components/EducationCreatationForm"
 export default function CreateEducationPage() {
   return (
-    <div>
-      <h1>Eduction</h1>
+    <div className="min-h-screen max-w-full py-5">
+       <EducationCreationForm mode="create"/>
     </div>
   );
 }

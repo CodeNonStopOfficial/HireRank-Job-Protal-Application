@@ -18,27 +18,37 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { DeleteExprienceFormMethod } from "@/app/(organization)/candidate/profile/actions";
+
+import {
+  DeleteExprienceFormMethod,
+  DeleteEducationFormMethod,
+} from "@/app/(organization)/candidate/profile/actions";
 
 type Props = {
-  experienceId: string;
+  deleteId: string;
   description?: string;
+  type: "education" | "exprience";
 };
 
-export function DeleteButtonComponent({ experienceId, description }: Props) {
+export function DeleteButtonComponent({ deleteId, type, description }: Props) {
   const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await DeleteExprienceFormMethod(experienceId);
+      const result =
+        type === "exprience"
+          ? await DeleteExprienceFormMethod(deleteId)
+          : await DeleteEducationFormMethod(deleteId);
 
       if (result.status === "success") {
         toast.add({
           type: "success",
           title: result.message,
         });
+
         setOpen(false);
         router.refresh();
       } else {
@@ -62,21 +72,15 @@ export function DeleteButtonComponent({ experienceId, description }: Props) {
             Delete
           </Button>
         }
-      ></AlertDialogTrigger>
+      />
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Permanetly?</AlertDialogTitle>
+          <AlertDialogTitle>Delete Permanently?</AlertDialogTitle>
 
           <AlertDialogDescription>
-            {description ? (
-              <span>{description}</span>
-            ) : (
-              <span>
-                This action cannot be undone. This experience record will be
-                permanently deleted.
-              </span>
-            )}
+            {description ??
+              "This action cannot be undone. This record will be permanently deleted."}
           </AlertDialogDescription>
         </AlertDialogHeader>
 

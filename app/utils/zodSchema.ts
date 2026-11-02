@@ -98,7 +98,6 @@ export const createJobSchema = z.object({
 
 export type CreateJobInputType = z.infer<typeof createJobSchema>;
 
-
 export const createExprienceSchema = z.object({
   companyName: z
     .string()
@@ -126,7 +125,7 @@ export const createExprienceSchema = z.object({
   workDescription: z
     .string()
     .min(50, "Description must be at least 50 characters")
-    .max(300, "Description must be less than 300 characters")
+    .max(10000, "Description must be less than 10k characters")
     .optional()
     .or(z.literal("")),
 
@@ -146,6 +145,31 @@ export const createExprienceSchema = z.object({
   ]),
 });
 
-export type createExprienceSchemaType = z.infer<
-  typeof createExprienceSchema
->;
+export type createExprienceSchemaType = z.infer<typeof createExprienceSchema>;
+
+export const educationSchema = z.object({
+  collegeName: z
+    .string()
+    .min(3, "College name must be at least 3 characters")
+    .max(50, "College name must be less than 50 characters"),
+  collegeLogo: uploadedFileSchema.nullable().optional(),
+  courseName: z.string().max(10, "Course Less then 20 characters"),
+  startDate: z
+    .string()
+    .min(1, "Please add your work start date")
+    .max(20, "Start date is too long"),
+
+  endDate: z
+    .string()
+    .max(20, "End date is too long")
+    .optional()
+    .or(z.literal("")),
+  aboutCollege: z
+    .string()
+    .min(50, "Description must be at least 50 characters")
+    .max(3000, "Description must be less than 3000 characters")
+    .optional()
+    .or(z.literal("")),
+});
+
+export type EducationSchemaType = z.infer<typeof educationSchema>;

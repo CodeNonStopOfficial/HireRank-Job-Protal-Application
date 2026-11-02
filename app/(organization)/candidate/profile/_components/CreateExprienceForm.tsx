@@ -52,7 +52,6 @@ import {
 import { tryCatch } from "@/hooks/try-catchs";
 import { useRouter } from "next/navigation";
 import { GetExperienceDataByIdType } from "@/app/services/users/get-exprience-databyid";
-import Image from "next/image";
 
 interface iAppProsExprience {
   mode: "create" | "update";
