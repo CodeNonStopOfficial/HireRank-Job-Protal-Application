@@ -27,7 +27,7 @@ export function JobSeekerForm() {
     resolver: zodResolver(jobSeekerSchema),
     defaultValues: {
       name: "",
-      about: "",
+      goal : "",
       resume: null,
     },
   });
@@ -78,16 +78,16 @@ export function JobSeekerForm() {
             />
           </div>
           <Controller
-            name="about"
+            name="goal"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>User About</FieldLabel>{" "}
+                <FieldLabel htmlFor={field.name}>Aim and Goal</FieldLabel>{" "}
                 <Textarea
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
-                  placeholder="Tell us a little about yourself, what you do, and what makes you unique..."
+                  placeholder="ex..Full Stack Developer"
                   className="min-h-22 resize-none"
                 />
                 <FieldDescription>

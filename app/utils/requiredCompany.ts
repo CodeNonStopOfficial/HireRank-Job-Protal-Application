@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { requiredUser } from "./requiredUser";
 import prisma from "@/lib/prisma";
 
-
 export async function requireCompany() {
   const session = await requiredUser();
 
@@ -18,12 +17,16 @@ export async function requireCompany() {
       name: true,
       email: true,
       role: true,
-      image : true
+      image: true,
+      onboadingCompleted: true,
     },
   });
 
   if (!user || user.role !== "COMPANY") {
     redirect("/unauthorized");
+  }
+  if (!user.onboadingCompleted) {
+    redirect("/onboading");
   }
 
   return user;

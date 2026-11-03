@@ -107,8 +107,8 @@ model Company {
 model JobSeeker {
   id         String       @id @default(uuid())
   name       String
-  about      String       @db.Text()
-  resume     String
+  about      String?       @db.Text()
+  resume     String?
   headline   String?
   phone      String?
   location   String?

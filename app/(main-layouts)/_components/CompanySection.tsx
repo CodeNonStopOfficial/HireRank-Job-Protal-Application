@@ -1,9 +1,13 @@
-
 "use client";
 
 import type { getAllCompanyAndWithJobsType } from "@/app/services/candidata/get-companyall";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ArrowUpRight, Building2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowUpRight,
+  Building2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
@@ -37,13 +41,12 @@ export function CompanySection({ company }: iAppCompany) {
           </span>
 
           <h2 className="mt-5 text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
-            Get Hired by{" "}
-            <span className="text-primary">Leading Companies</span>
+            Get Hired by <span className="text-primary">Leading Companies</span>
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted-foreground sm:mt-4 sm:text-base sm:leading-7">
-            Explore exciting job opportunities from leading organizations
-            and find the right place to grow your career.
+            Explore exciting job opportunities from leading organizations and
+            find the right place to grow your career.
           </p>
         </div>
 
@@ -76,7 +79,19 @@ export function CompanySection({ company }: iAppCompany) {
               >
                 {/* Company icon */}
                 <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-105">
-                  <Image src={data.logo} width={34} height={44} alt="logo"/>
+                  {data.logo ? (
+                    <Image
+                      src={data.logo}
+                      width={34}
+                      height={44}
+                      className="border rounded object-cover"
+                      alt="logo"
+                    />
+                  ) : (
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Company name */}

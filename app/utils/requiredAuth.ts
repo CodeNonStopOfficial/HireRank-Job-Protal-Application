@@ -19,6 +19,7 @@ export async function requireAuthUser() {
       email: true,
       role: true,
       image : true,
+      onboadingCompleted : true
     },
   });
 

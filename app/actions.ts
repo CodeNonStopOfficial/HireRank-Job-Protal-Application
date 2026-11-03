@@ -47,6 +47,7 @@ export async function createJobSeekerOnboading(
       jobSeeker: {
         create: {
           ...validateData,
+          goal: validateData.goal ?? "",
           resume: validateData.resume?.url ?? "",
         },
       },

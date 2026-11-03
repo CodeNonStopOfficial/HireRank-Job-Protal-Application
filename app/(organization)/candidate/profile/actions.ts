@@ -6,6 +6,8 @@ import {
   createExprienceSchemaType,
   educationSchema,
   EducationSchemaType,
+  userProfileSchema,
+  userProfileSchemaType,
 } from "@/app/utils/zodSchema";
 import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
@@ -210,8 +212,7 @@ export async function DeleteExprienceFormMethod(experienceId: string) {
   }
 }
 
-
-// Education Action 
+// Education Action
 
 export async function CreateEducationMethod(
   data: EducationSchemaType,
@@ -311,7 +312,7 @@ export async function UpdateEducationMethod(
     await prisma.education.update({
       where: {
         id: educationId,
-        jobSeekerId : seeker.id
+        jobSeekerId: seeker.id,
       },
       data: {
         ...educationDatas,
@@ -330,7 +331,6 @@ export async function UpdateEducationMethod(
     };
   }
 }
-
 
 export async function DeleteEducationFormMethod(educationId: string) {
   try {
@@ -392,6 +392,76 @@ export async function DeleteEducationFormMethod(educationId: string) {
     return {
       status: "error",
       message: "Failed to delete education",
+    };
+  }
+}
+
+export async function UpdateProfileJobSeeker(
+  data: userProfileSchemaType,
+  seekerId: string,
+): Promise<ApiResponse> {
+  try {
+    const session = await requiredUser();
+    if (!session.id) {
+      return {
+        status: "error",
+        message: "User Not Found",
+      };
+    }
+    const validationData = userProfileSchema.safeParse(data);
+    if (!validationData.success) {
+      return {
+        status: "error",
+        message: validationData.error.issues
+          .map((issue) => issue.message)
+          .join(" ,"),
+      };
+    }
+
+    const jobSeeker = await prisma.jobSeeker.findFirst({
+      where: {
+        id: seekerId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!jobSeeker?.id) {
+      return {
+        status: "error",
+        message: "JobSeer Not Found",
+      };
+    }
+    await prisma.jobSeeker.update({
+      where: {
+        id: jobSeeker.id,
+      },
+      data: {
+        name: validationData.data.name,
+        phone: validationData.data.phone,
+        headline: validationData.data.headline,
+        about: validationData.data.about,
+        linkeding: validationData.data.linkedingUrl,
+        githubUrl: validationData.data.linkedingUrl,
+        xAccount: validationData.data.xAccountUrl,
+        website: validationData.data.websiteUrl,
+        location: validationData.data.location,
+        goal: validationData.data.goal,
+        skills: validationData.data.skills,
+        resume: validationData.data.resume?.url,
+      },
+    });
+
+    return {
+      status: "success",
+      message: "Profile Updated Successfully",
+    };
+  } catch (error) {
+    console.error("Update JobSeeker Profile ERROR:", error);
+
+    return {
+      status: "error",
+      message: "Failed to Update JobSeeker Profile",
     };
   }
 }

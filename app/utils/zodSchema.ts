@@ -24,7 +24,7 @@ export const companySchema = z.object({
 
 export const jobSeekerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  about: z.string().min(10, "Please provide more information about yourself"),
+  goal: z.string().max(50, "Please provide Headline Tag"),
   resume: uploadedFileSchema.nullable(),
 });
 
@@ -173,3 +173,23 @@ export const educationSchema = z.object({
 });
 
 export type EducationSchemaType = z.infer<typeof educationSchema>;
+
+
+
+// user profile zonschema
+export const userProfileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  about: z.string(),
+  headline: z.string().optional(),
+  phone: z.string(),
+  location: z.string().optional(),
+  linkedingUrl: z.string().optional(),
+  githubUrl: z.string().optional(),
+  xAccountUrl: z.string().optional(),
+  websiteUrl: z.string().optional(),
+  skills: z.array(z.string()).min(1, "Please select at least one skill"),
+  resume: uploadedFileSchema.nullable().optional(),
+  goal: z.string().optional(),
+});
+
+export type userProfileSchemaType = z.infer<typeof userProfileSchema>;

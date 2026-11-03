@@ -17,12 +17,16 @@ export async function requireAdmin() {
       name: true,
       email: true,
       role: true,
-      image : true
+      image: true,
+      onboadingCompleted: true,
     },
   });
 
   if (!user || user.role !== "ADMIN") {
     redirect("/unauthorized");
+  }
+  if (!user.onboadingCompleted) {
+    redirect("/onboading");
   }
 
   return user;

@@ -1,8 +1,9 @@
+
 import "server-only";
+
 import { redirect } from "next/navigation";
 import { requiredUser } from "./requiredUser";
 import prisma from "@/lib/prisma";
-
 
 export async function requireJobSeeker() {
   const session = await requiredUser();
@@ -12,18 +13,25 @@ export async function requireJobSeeker() {
   }
 
   const user = await prisma.user.findUnique({
-    where: { email: session?.email },
+    where: {
+      email: session.email,
+    },
     select: {
       id: true,
       name: true,
       email: true,
       role: true,
-      image : true
+      image: true,
+      onboadingCompleted: true,
     },
   });
 
   if (!user || user.role !== "JOB_SEEKER") {
     redirect("/unauthorized");
+  }
+
+  if (!user.onboadingCompleted) {
+    redirect("/onboading");
   }
 
   return user;

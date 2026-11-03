@@ -33,7 +33,7 @@ export default async function HomePage() {
             </div>
           </>
         )}
-              <div>
+        <div>
           {company.length > 0 ? (
             <>
               <CompanySection company={company} />
@@ -41,7 +41,7 @@ export default async function HomePage() {
           ) : (
             <>
               <div className="px-4 py-4 md:px-8 lg:px-12">
-                <NoJobsFound title ="Not Company" />
+                <NoJobsFound title="Not Company" />
               </div>
             </>
           )}

@@ -21,11 +21,13 @@ import {
   User,
 } from "lucide-react";
 import Image from "next/image";
+import { JsonToHtml } from "@/components/tiptap/JsonTiptapContent";
 import Link from "next/link";
 import Resume from "../_components/ResumeShow";
 import ShowEducationComponent from "@/app/(organization)/candidate/profile/_components/ShowEducationComponent";
 import ShowExprienceComponent from "@/app/(organization)/candidate/profile/_components/ShowExperienceComponent";
 import { buttonVariants } from "@/components/ui/button";
+import { Suspense } from "react";
 
 export default async function CandidateProfilePage() {
   const data = await getUserDataPerUser();
@@ -145,33 +147,43 @@ export default async function CandidateProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="flex flex-col gap-4">
               <Card className="h-fit">
-                <CardContent className="space-y-1">
+                <CardContent className="space-y-3">
                   <h1 className="text-xl font-bold">About Me</h1>
-                  <div>
-                    {data.jobSeeker?.about ? (
-                      <span>{data.jobSeeker?.about}</span>
-                    ) : (
-                      <span>Not About Conent</span>
-                    )}
-                  </div>
+
+                  {data.jobSeeker?.about ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none wrap-break-word">
+                      <JsonToHtml json={JSON.parse(data.jobSeeker.about)} />
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      No About Content
+                    </span>
+                  )}
                 </CardContent>
               </Card>
               <Card className="h-fit">
                 <CardContent className="space-y-1">
                   <h1 className="text-xl font-bold">Skills</h1>
                   {(data.jobSeeker?.skills.length ?? 0) > 0 ? (
-                    <div>
-                    {data.jobSeeker?.skills.map((data, index) => (
-                      <div key={index + 1}>
-                        <span>{data}</span>
-                      </div>
-                    ))}
-                  </div>
-                  ):(
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-2">
+                      {data.jobSeeker?.skills.map((data, index) => (
+                        <div
+                          key={index + 1}
+                          className="border py-2 bg-gray-100 dark:bg-gray-900 text-sm font-normal rounded-2xl px-4"
+                        >
+                          <span className="text-sm font-medium text-primary dark:text-gray-100">
+                            {data}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
                     <>
-                     <div className="mt-2 items-center">
-                       <h1 className="text-sm font-semibold text-muted-foreground">Skills Not Available</h1>
-                     </div>
+                      <div className="mt-2 items-center">
+                        <h1 className="text-sm font-semibold text-muted-foreground">
+                          Skills Not Available
+                        </h1>
+                      </div>
                     </>
                   )}
                 </CardContent>
@@ -183,7 +195,7 @@ export default async function CandidateProfilePage() {
                 <div className="flex items-center justify-between">
                   <h1 className="text-xl font-bold">Resume</h1>
                   <Link
-                    href="/resume.pdf"
+                    href={`/${data.jobSeeker?.resume} ?? '/data.pdf'`}
                     download
                     className="inline-flex items-center gap-2 px-2 py-2
                  bg-black text-white rounded font-semibold
@@ -207,7 +219,7 @@ export default async function CandidateProfilePage() {
                 </div>
                 <div className="max-w-full mt-2 flex items-end justify-end gap-2">
                   <Link
-                    href={`/candidate/profile/${data.id}`}
+                    href={`profile/${data.jobSeeker?.id}`}
                     className={buttonVariants({
                       variant: "default",
                       className:
