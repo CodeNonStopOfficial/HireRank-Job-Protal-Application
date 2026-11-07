@@ -1,12 +1,20 @@
+// app/utils/requiredUser.ts
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
-import prisma from "@/lib/prisma";
 
 export async function requiredUser() {
-  const session = await auth();
-  if (!session?.user) {
-    return redirect("/login");
+  let session;
+
+  try {
+    session = await auth();
+  } catch (error) {
+    console.warn("Authentication unavailable. Check your internet/database connection.");
+    redirect("/login?error=auth-unavailable");
   }
-  
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return session.user;
 }

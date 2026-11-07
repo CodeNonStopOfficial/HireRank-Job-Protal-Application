@@ -1,6 +1,7 @@
 import "server-only";
 import { requiredUser } from "@/app/utils/requiredUser";
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
 
 export async function getUserDataPerUser() {
   try {
@@ -14,22 +15,22 @@ export async function getUserDataPerUser() {
       where: {
         id: session.id,
       },
-      include : {
-        jobSeeker : {
-          include : {
-             experience : {
-               orderBy : {
-                 startDate : "desc"
-               }
-             },
-             education : {
-              orderBy : {
-                startDate : "desc"
-              }
-             }
-          }
-        }
-      }
+      include: {
+        jobSeeker: {
+          include: {
+            experience: {
+              orderBy: {
+                startDate: "desc",
+              },
+            },
+            education: {
+              orderBy: {
+                startDate: "desc",
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -37,12 +38,14 @@ export async function getUserDataPerUser() {
     }
 
     return user;
-
   } catch (error) {
+    unstable_rethrow(error);
     console.error("Get user data error:", error);
 
     throw error;
   }
 }
 
-export type getUserDataPerUserType = Awaited<ReturnType<typeof getUserDataPerUser>>
+export type getUserDataPerUserType = Awaited<
+  ReturnType<typeof getUserDataPerUser>
+>;

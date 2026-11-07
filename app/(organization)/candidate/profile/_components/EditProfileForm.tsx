@@ -435,7 +435,7 @@ export function EducationCreationForm({ profile }: iAppProsProfile) {
               </div>
 
               <div>
-                <CardTitle className="text-lg">Company Logo</CardTitle>
+                <CardTitle className="text-lg">Resume Upload</CardTitle>
 
                 <CardDescription>
                   Upload your company logo to make your profile look

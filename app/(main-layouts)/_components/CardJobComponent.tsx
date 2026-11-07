@@ -51,7 +51,7 @@ export function JobCardComponent({ jobs}: iAppPross) {
           <div className="flex flex-row justify-between items-center">
             <div className="flex items-start gap-2">
               <Image
-                src={jobs.company.logo}
+                src={jobs.company.logo ?? ""}
                 alt="logo"
                 width={54}
                 height={54}

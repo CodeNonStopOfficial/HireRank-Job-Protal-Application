@@ -11,6 +11,7 @@ import {
 } from "@/app/utils/zodSchema";
 import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 export async function CreateExprienceFormMethod(
   data: createExprienceSchemaType,
@@ -23,6 +24,7 @@ export async function CreateExprienceFormMethod(
         status: "error",
         message: "User not found",
       };
+      
     }
 
     const validatedData = createExprienceSchema.safeParse(data);
@@ -45,7 +47,7 @@ export async function CreateExprienceFormMethod(
       },
     });
 
-    if (!jobSeeker) {
+    if (!jobSeeker?.id) {
       return {
         status: "error",
         message: "Job seeker profile not found",

@@ -1,13 +1,13 @@
 "use server";
 
-import { requireCompany} from "@/app/utils/requiredCompany";
-import { requiredUser} from "@/app/utils/requiredUser";
+import { requireCompany } from "@/app/utils/requiredCompany";
+import { requiredUser } from "@/app/utils/requiredUser";
 import prisma from "@/lib/prisma";
 import { ApiResponse } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 
 export async function deleteCompanyAction(
-  companyId: string
+  companyId: string,
 ): Promise<ApiResponse> {
   const session = await requireCompany();
   try {
@@ -21,19 +21,20 @@ export async function deleteCompanyAction(
     await prisma.company.delete({
       where: {
         id: companyId,
-        userId : session.id
+        userId: session.id,
       },
     });
 
     await prisma.user.update({
-        where :{
-            id : session.id,
-        },
-        data : {
-            role : "JOB_SEEKER",
-            userType : "JOB_SEEKER"
-        }
-    })
+      where: {
+        id: session.id,
+      },
+      data: {
+        role: "JOB_SEEKER",
+        userType: "JOB_SEEKER",
+        onboadingCompleted: false,
+      },
+    });
 
     return {
       status: "success",
@@ -49,29 +50,40 @@ export async function deleteCompanyAction(
   }
 }
 
-export async function deleteCompanyAndUserAccount() : Promise<ApiResponse> {
-     try {
-        const session = await requiredUser();
-        if(!session){
-            return {
-                status : "error",
-                message : "User Not Found"
-            }
-        }
-        await prisma.user.delete({
-             where : {
-                id : session.id,
-             }
-        }) 
-        revalidatePath("/")
-        return {
-            status : "success",
-            message : "Account Deleted Successfully"
-        }
-     } catch {
-        return {
-            status : "error",
-            message : "Invalide Account Deleted"
-        }
-     }
-} 
+export async function deleteCompanyAndUserAccount(): Promise<ApiResponse> {
+  try {
+    const session = await requiredUser();
+    if (!session) {
+      return {
+        status: "error",
+        message: "User Not Found",
+      };
+    }
+    await prisma.user.delete({
+      where: {
+        id: session.id,
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        id: session.id,
+      },
+      data: {
+        role: "JOB_SEEKER",
+        userType: "JOB_SEEKER",
+        onboadingCompleted: false,
+      },
+    });
+    revalidatePath("/");
+    return {
+      status: "success",
+      message: "Account Deleted Successfully",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Invalide Account Deleted",
+    };
+  }
+}

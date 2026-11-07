@@ -1,6 +1,5 @@
 
 import "server-only";
-
 import { redirect } from "next/navigation";
 import { requiredUser } from "./requiredUser";
 import prisma from "@/lib/prisma";

@@ -10,11 +10,10 @@ export default async function AuthLayoutPage({
 }: {
   children: ReactNode;
 }) {
-  const session = await auth();
-
-  if (session?.user){
-     return redirect("/")
-  }
+   const session = await auth();
+   if(session?.user){
+    return redirect("/");
+   }
   return (
     <div className=" relative max-w-full">
       <div className="absolute top-4 left-4">

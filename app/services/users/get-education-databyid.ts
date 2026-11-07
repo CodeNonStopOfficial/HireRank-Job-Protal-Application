@@ -1,8 +1,8 @@
-
 import "server-only";
 
 import { requiredUser } from "@/app/utils/requiredUser";
 import prisma from "@/lib/prisma";
+import { unstable_rethrow } from "next/navigation";
 
 export async function getEducationDataById(educationId: string) {
   try {
@@ -38,6 +38,7 @@ export async function getEducationDataById(educationId: string) {
 
     return education;
   } catch (error) {
+    unstable_rethrow(error);
     console.error("Get experience data error:", error);
     throw error;
   }

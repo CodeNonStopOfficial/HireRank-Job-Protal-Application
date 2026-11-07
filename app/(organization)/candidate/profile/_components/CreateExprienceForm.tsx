@@ -123,11 +123,13 @@ export function CreateExprienceForm({ mode, exprience }: iAppProsExprience) {
           type: "error",
           title: data.message,
         });
+        router.push("/onboading");
       } else {
         toast.add({
           type: "error",
           title: "Failed to create experience",
         });
+        router.push("/onboading");
       }
     });
   }
