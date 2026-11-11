@@ -176,11 +176,6 @@ export const candidateNavItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Find Jobs",
-    url: "/jobs",
-    icon: Search,
-  },
-  {
     title: "My Profile",
     url: "/candidate/profile",
     icon: UserRound,
