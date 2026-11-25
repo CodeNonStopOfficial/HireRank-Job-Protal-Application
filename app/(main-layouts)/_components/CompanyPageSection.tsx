@@ -163,7 +163,7 @@ export function CompaniesPage({companies}:iAppProps) {
 
       return matchesSearch && matchesIndustry;
     });
-  }, [search, selectedIndustry]);
+  }, [search, selectedIndustry,companies]);
 
   const totalJobs = companies.reduce(
     (total, company) => total + company._count.jobs,
