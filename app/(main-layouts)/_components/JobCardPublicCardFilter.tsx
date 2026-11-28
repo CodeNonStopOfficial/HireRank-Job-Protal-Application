@@ -27,7 +27,7 @@ import {
 import { toast } from "@/components/ui/toast";
 import { RefreshCcwDot } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useMemo, useState } from "react";
 
 interface iAppProps {
   data: getDataPublicJobTypeArray;
@@ -36,21 +36,22 @@ export function JobPublicJobFilterCard({ data }: iAppProps) {
 
   const searchParams = useSearchParams();
   const company = searchParams.get("company")?.trim() ?? "";
-   const department = searchParams.get("category")?.trim() ?? "";
-  const [search, setSearch] = useState("");
+  const department = searchParams.get("category")?.trim() ?? "";
+  const [searchs, setSearch] = useState("");
   const [location, setLocation] = useState<string>("");
   const [jobType, setJobType] = useState<string | null>("");
   const [experience, setExpreLevel] = useState<string | null>("");
+  
 
-  useEffect(()=>{
-    if(company) {
-       setSearch(company);
-    }else if(department) {
-      setSearch(department)
-    }else {
-      setSearch("");
-    }
-  },[company,department])
+  const search = useMemo(() => {
+  if (company) {
+    return company;
+  } else if (department) {
+    return department;
+  } else {
+    return "";
+  }
+}, [company, department]);
 
 
 
