@@ -105,7 +105,7 @@ export function JobSeekerForm() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Company Logo</FieldLabel>
+                <FieldLabel htmlFor={field.name}>Upload Resume</FieldLabel>
                 <MediaUploader
                   endpoint="pdfUploader"
                   accept="application/pdf"

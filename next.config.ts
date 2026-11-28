@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "utfs.io",
       },
-       {
+      {
         protocol: "https",
         hostname: "static.naukimg.com",
       },
@@ -16,14 +16,18 @@ const nextConfig: NextConfig = {
         hostname: "3fdk4hlq2q.ufs.sh",
       },
       {
-        protocol : "https",
-        hostname : "lh3.googleusercontent.com"
-      }
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "http",
+        hostname: "avatars.githubusercontent.com",
+      },
     ],
   },
-  eslint : {
-    ignoreDuringBuilds :  true,
-  }
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
